@@ -1,0 +1,239 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────
+   AutoMate — landing surface
+   Professional automotive · graphite canvas ·
+   warm amber accent · photography-led
+   ────────────────────────────────────────────── */
+:root {
+  color-scheme: dark;
+  --amber: 224 163 62;  /* workshop-light amber */
+  --copper: 194 112 63; /* burnt copper        */
+  --steel: 125 139 153; /* brushed steel       */
+  --graphite: 14 17 19; /* canvas              */
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+* {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #f4f1ec;
+  background: #0e1113;
+  /* Warm, restrained washes — a lit showroom rather than a neon skyline. */
+  background-image:
+    radial-gradient(50rem 50rem at 12% -8%, rgba(var(--amber), 0.10), transparent 60%),
+    radial-gradient(42rem 42rem at 100% 8%, rgba(var(--copper), 0.07), transparent 55%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: 'Sora', 'Inter', sans-serif;
+  letter-spacing: -0.025em;
+}
+
+/* Amber-to-copper gradient text for the hero's emphasis word. */
+.text-brand-gradient {
+  background: linear-gradient(100deg, #f0bd6b, #e0a33e 45%, #c2703f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Frosted panel over photography. Blur is capped at 16px — heavier costs
+   real frames once several panels are composited over a moving image. */
+.panel {
+  background: rgba(20, 24, 27, 0.72);
+  backdrop-filter: blur(16px) saturate(115%);
+  -webkit-backdrop-filter: blur(16px) saturate(115%);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow:
+    0 18px 48px -20px rgba(0, 0, 0, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Scrim laid over every background photograph so text stays legible
+   regardless of what the image is doing underneath. */
+.scrim {
+  background:
+    linear-gradient(180deg, rgba(14, 17, 19, 0.55) 0%, rgba(14, 17, 19, 0.82) 55%, #0e1113 100%),
+    linear-gradient(90deg, rgba(14, 17, 19, 0.9) 0%, rgba(14, 17, 19, 0.35) 60%, transparent 100%);
+}
+
+/* Lighter scrim for the smaller card photographs. */
+.scrim-card {
+  background: linear-gradient(180deg, rgba(14, 17, 19, 0.25) 0%, rgba(20, 24, 27, 0.92) 62%, #14181b 100%);
+}
+
+/* Thin machined rule used under section eyebrows. */
+.rule-amber {
+  background: linear-gradient(90deg, #e0a33e, rgba(224, 163, 62, 0));
+}
+
+/* ──────────────────────────────────────────────
+   AutoMate activity mark
+
+   The motion half of components/BrandLoader.tsx. Keyframes, timings and
+   layer names are identical to the role apps' globals.css, so the mark
+   behaves the same on every AutoMate surface. Only `transform` and
+   `opacity` animate, so the whole thing stays on the compositor.
+
+   Colours come from --loader-1/2/3, which the component sets per instance
+   (amber by default, or the role's accent while that role is loading).
+   ────────────────────────────────────────────── */
+.brand-loader {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  --loader-1: #f0bd6b;
+  --loader-2: #e0a33e;
+  --loader-3: #c2703f;
+}
+
+/* Soft halo — the thing that makes it read as "alive" rather than "a circle". */
+.brand-loader__halo {
+  position: absolute;
+  inset: -14%;
+  border-radius: 50%;
+  /* Fallback for engines without color-mix(); the amber default is the
+     overwhelmingly common case anyway. */
+  background: radial-gradient(
+    circle,
+    rgba(224, 163, 62, 0.28) 0%,
+    rgba(240, 189, 107, 0.12) 45%,
+    transparent 70%
+  );
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--loader-2) 30%, transparent) 0%,
+    color-mix(in srgb, var(--loader-1) 14%, transparent) 45%,
+    transparent 70%
+  );
+  filter: blur(4px);
+  animation: loader-halo 1.9s ease-in-out infinite;
+}
+
+.brand-loader__svg { position: relative; overflow: visible; }
+
+/* Both arcs spin about the mark's centre. */
+.brand-loader__arc-outer,
+.brand-loader__arc-inner {
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+}
+.brand-loader__arc-outer { animation: loader-orbit 1.15s cubic-bezier(0.62, 0.1, 0.36, 0.94) infinite; }
+.brand-loader__arc-inner { animation: loader-orbit-rev 1.7s linear infinite; }
+
+/* The comet: its length breathes as it travels, so the sweep never looks
+   mechanical the way a fixed-length arc does. */
+.brand-loader__comet { animation: loader-dash 1.15s ease-in-out infinite; }
+
+/* Rounded-square core — carries over the Brandmark's medallion language. */
+.brand-loader__core {
+  position: absolute;
+  background: linear-gradient(135deg, var(--loader-1), var(--loader-3));
+  animation: loader-core 1.15s ease-in-out infinite;
+}
+
+@keyframes loader-orbit     { to { transform: rotate(360deg); } }
+@keyframes loader-orbit-rev { to { transform: rotate(-360deg); } }
+@keyframes loader-dash {
+  0%   { stroke-dasharray: 16 300; stroke-dashoffset: 0; }
+  50%  { stroke-dasharray: 92 300; stroke-dashoffset: -24; }
+  100% { stroke-dasharray: 16 300; stroke-dashoffset: -122; }
+}
+@keyframes loader-core {
+  0%, 100% { transform: scale(1) rotate(0deg);      border-radius: 32%; }
+  50%      { transform: scale(0.72) rotate(45deg);  border-radius: 48%; }
+}
+@keyframes loader-halo {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50%      { opacity: 0.85; transform: scale(1.08); }
+}
+
+/* Indeterminate top bar — pairs with the overlay on the cross-origin hand-off,
+   where the browser's own progress bar doesn't start until we navigate. */
+.brand-loader-bar {
+  --loader-1: #f0bd6b;
+  --loader-2: #e0a33e;
+  --loader-3: #c2703f;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--loader-1),
+    var(--loader-2),
+    var(--loader-3),
+    transparent
+  );
+  animation: loader-bar 1.15s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes loader-bar {
+  0%   { transform: translateX(-100%) scaleX(0.6); }
+  55%  { transform: translateX(60%) scaleX(1); }
+  100% { transform: translateX(220%) scaleX(0.7); }
+}
+
+/* Reduced motion: the global rule below kills animation outright, which would
+   freeze the loader into a static glyph and read as "stuck". Keep one honest
+   "still working" pulse instead of pretending nothing is happening. */
+@media (prefers-reduced-motion: reduce) {
+  .brand-loader__halo,
+  .brand-loader__core,
+  .brand-loader__comet { animation: none !important; }
+  .brand-loader__arc-outer,
+  .brand-loader__arc-inner,
+  .brand-loader-bar {
+    animation: loader-rm-pulse 1.6s ease-in-out infinite !important;
+    animation-duration: 1.6s !important;
+    animation-iteration-count: infinite !important;
+    transform: none !important;
+  }
+}
+@keyframes loader-rm-pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0e1113;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--amber), 0.32);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--amber), 0.5);
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--amber));
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+/* Honour the OS reduced-motion setting for every CSS animation.
+   Framer Motion is gated separately via usePrefersReducedMotion(). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────
+   Aurora design system — AutoMate (Mechanic / vendor)
+   Premium light canvas · emerald/teal accents · glass
+   ────────────────────────────────────────────── */
+:root {
+  color-scheme: light;
+  --accent-1: 16 185 129;   /* emerald-500 */
+  --accent-2: 20 184 166;   /* teal-500    */
+  --accent-3: 6 182 212;    /* cyan-500    */
+  --ink: 15 23 42;          /* slate-900   */
+  --muted: 100 116 139;     /* slate-500   */
+  --canvas: 248 250 252;    /* slate-50    */
+}
+
+html, body { padding: 0; margin: 0; }
+* { -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: rgb(var(--ink));
+  background: rgb(var(--canvas));
+  background-image:
+    radial-gradient(60rem 60rem at 110% -10%, rgba(20, 184, 166, 0.10), transparent 60%),
+    radial-gradient(50rem 50rem at -10% 10%, rgba(16, 185, 129, 0.10), transparent 55%),
+    radial-gradient(40rem 40rem at 50% 120%, rgba(6, 182, 212, 0.08), transparent 60%);
+  background-attachment: fixed;
+}
+
+h1, h2, h3, .font-display { font-family: 'Sora', 'Inter', sans-serif; letter-spacing: -0.02em; }
+
+.text-gradient {
+  background: linear-gradient(100deg, rgb(var(--accent-1)), rgb(var(--accent-2)), rgb(var(--accent-3)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 32px -12px rgba(15, 23, 42, 0.12);
+}
+
+.bg-aurora {
+  background-image: linear-gradient(120deg, rgb(var(--accent-1)), rgb(var(--accent-2)) 55%, rgb(var(--accent-3)));
+}
+.ring-aurora { box-shadow: 0 8px 24px -6px rgba(16, 185, 129, 0.45); }
+
+.shimmer {
+  background: linear-gradient(90deg, rgba(148,163,184,0.12) 25%, rgba(148,163,184,0.22) 37%, rgba(148,163,184,0.12) 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+@keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+.animate-rise { animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.dropdown-panel { animation: dropdown-in 0.15s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: top center; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.3); border-radius: 9999px; border: 3px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(100,116,139,0.5); background-clip: content-box; }
+/* ── Micro-interaction motion (kit primitives) ── */
+/* Ripple ink for AnimatedButton */
+.ripple-ink {
+  width: 8px; height: 8px;
+  transform: translate(-50%, -50%);
+  animation: ripple-ink 0.6s ease-out forwards;
+}
+@keyframes ripple-ink {
+  from { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  to   { opacity: 0;   transform: translate(-50%, -50%) scale(34); }
+}
+
+/* Pulse ring for the current Timeline step */
+.animate-pulse-ring { animation: pulse-ring 1.8s cubic-bezier(0.22,1,0.36,1) infinite; }
+@keyframes pulse-ring {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  70%  { transform: scale(1.7); opacity: 0; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+/* Glowing focus border for inputs (micro-interaction) */
+.focus-glow:focus, .focus-glow:focus-within {
+  border-color: rgb(var(--accent-1));
+  box-shadow: 0 0 0 4px rgba(var(--accent-1), 0.15), 0 0 18px -2px rgba(var(--accent-1), 0.35);
+}
+
+/* Subtle animated gradient backdrop (bonus: background motion) */
+.bg-shift { background-size: 200% 200%; animation: bg-shift 14s ease infinite; }
+@keyframes bg-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Honour reduced-motion: kill non-essential animation everywhere */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .shimmer { animation: none !important; }
+}
+
+/* ──────────────────────────────────────────────
+   Brand loader — the single activity mark
+   Used at every size: 16px inside a button, 22px in a dropdown panel,
+   40px in a page body, 56px in the blocking overlay. Colours come from
+   --accent-1/2/3, so each role app is on-brand without a code change.
+   ────────────────────────────────────────────── */
+.brand-loader { position: relative; display: inline-grid; place-items: center; }
+
+/* Soft halo — the thing that makes it read as "alive" rather than "a circle". */
+.brand-loader__halo {
+  position: absolute;
+  inset: -14%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--accent-2), 0.28) 0%,
+    rgba(var(--accent-1), 0.12) 45%,
+    transparent 70%
+  );
+  filter: blur(4px);
+  animation: loader-halo 1.9s ease-in-out infinite;
+}
+
+.brand-loader__svg { position: relative; overflow: visible; }
+
+/* Both arcs spin about the icon's centre. */
+.brand-loader__arc-outer,
+.brand-loader__arc-inner {
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+}
+.brand-loader__arc-outer { animation: loader-orbit 1.15s cubic-bezier(0.62, 0.1, 0.36, 0.94) infinite; }
+.brand-loader__arc-inner { animation: loader-orbit-rev 1.7s linear infinite; }
+
+/* The comet: its length breathes as it travels, so the sweep never looks
+   mechanical the way a fixed-length arc does. */
+.brand-loader__comet { animation: loader-dash 1.15s ease-in-out infinite; }
+
+/* Rounded-square core — carries over the existing brand mark's language. */
+.brand-loader__core {
+  position: absolute;
+  background: linear-gradient(135deg, rgb(var(--accent-1)), rgb(var(--accent-3)));
+  animation: loader-core 1.15s ease-in-out infinite;
+}
+
+@keyframes loader-orbit     { to { transform: rotate(360deg); } }
+@keyframes loader-orbit-rev { to { transform: rotate(-360deg); } }
+@keyframes loader-dash {
+  0%   { stroke-dasharray: 16 300; stroke-dashoffset: 0; }
+  50%  { stroke-dasharray: 92 300; stroke-dashoffset: -24; }
+  100% { stroke-dasharray: 16 300; stroke-dashoffset: -122; }
+}
+@keyframes loader-core {
+  0%, 100% { transform: scale(1) rotate(0deg);      border-radius: 32%; }
+  50%      { transform: scale(0.72) rotate(45deg);  border-radius: 48%; }
+}
+@keyframes loader-halo {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50%      { opacity: 0.85; transform: scale(1.08); }
+}
+
+/* Indeterminate top bar — shown for route changes and in-flight requests. */
+.brand-loader-bar {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--accent-1)),
+    rgb(var(--accent-2)),
+    rgb(var(--accent-3)),
+    transparent
+  );
+  animation: loader-bar 1.15s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes loader-bar {
+  0%   { transform: translateX(-100%) scaleX(0.6); }
+  55%  { transform: translateX(60%) scaleX(1); }
+  100% { transform: translateX(220%) scaleX(0.7); }
+}
+
+/* Reduced motion: the global rule below kills animation outright, which would
+   freeze the loader into a static glyph. Keep one honest "still working" pulse
+   instead of pretending nothing is happening. */
+@media (prefers-reduced-motion: reduce) {
+  .brand-loader__halo,
+  .brand-loader__core,
+  .brand-loader__comet { animation: none !important; }
+  .brand-loader__arc-outer,
+  .brand-loader__arc-inner,
+  .brand-loader-bar {
+    animation: loader-rm-pulse 1.6s ease-in-out infinite !important;
+    animation-duration: 1.6s !important;
+    animation-iteration-count: infinite !important;
+    transform: none !important;
+  }
+}
+@keyframes loader-rm-pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }

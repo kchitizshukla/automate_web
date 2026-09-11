@@ -1,0 +1,25 @@
+{
+  "name": "automate-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AutoMate / FixMyRide — web frontends (landing, user, mechanic, admin) deployed on Vercel.",
+  "packageManager": "npm@10.8.2",
+  "workspaces": [
+    "apps/web/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --concurrency=15",
+    "build": "turbo run build",
+    "dev:landing": "npm run dev --workspace apps/web/landing",
+    "dev:user": "npm run dev --workspace apps/web/user",
+    "dev:mechanic": "npm run dev --workspace apps/web/mechanic",
+    "dev:admin": "npm run dev --workspace apps/web/admin"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

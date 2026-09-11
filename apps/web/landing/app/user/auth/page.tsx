@@ -1,0 +1,14 @@
+import type { Metadata } from 'next';
+import { APP_NAME, getRole } from '@automate/shared-brand';
+import { AuthHandoff } from '@/components/AuthHandoff';
+
+const role = getRole('user')!;
+
+export const metadata: Metadata = {
+  title: `${APP_NAME} — ${role.label} sign in`,
+  description: role.description,
+};
+
+export default function UserAuthPage() {
+  return <AuthHandoff roleId="user" />;
+}
