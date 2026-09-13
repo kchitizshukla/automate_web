@@ -183,18 +183,35 @@ export function Stars({ value, size = 'sm', onChange }: { value: number; size?: 
   const cls = size === 'lg' ? 'text-2xl' : 'text-sm';
   return (
     <span className={classNames('inline-flex', cls)}>
-      {[1, 2, 3, 4, 5].map((n) => (
-        <button
-          key={n}
-          type="button"
-          disabled={!onChange}
-          onClick={() => onChange?.(n)}
-          className={classNames(onChange ? 'cursor-pointer transition hover:scale-110' : 'cursor-default', 'leading-none')}
-          aria-label={`${n} star`}
-        >
-          <span className={n <= Math.round(value) ? 'text-amber-400' : 'text-slate-300'}>★</span>
-        </button>
-      ))}
+      {[1, 2, 3, 4, 5].map((n) => {
+        // How much of this star is earned: 1 when fully covered, a fraction
+        // for the one the average lands inside, 0 beyond it. Rounding the
+        // whole value instead showed 4.6 as five full stars.
+        const fill = Math.max(0, Math.min(1, value - (n - 1)));
+        return (
+          <button
+            key={n}
+            type="button"
+            disabled={!onChange}
+            onClick={() => onChange?.(n)}
+            className={classNames(onChange ? 'cursor-pointer transition hover:scale-110' : 'cursor-default', 'leading-none')}
+            aria-label={`${n} star`}
+          >
+            <span className="relative inline-block">
+              <span className="text-slate-300">★</span>
+              {fill > 0 && (
+                <span
+                  aria-hidden
+                  className="absolute inset-y-0 left-0 overflow-hidden text-amber-400"
+                  style={{ width: `${fill * 100}%` }}
+                >
+                  ★
+                </span>
+              )}
+            </span>
+          </button>
+        );
+      })}
     </span>
   );
 }

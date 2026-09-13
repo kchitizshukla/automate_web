@@ -68,25 +68,12 @@ export function RoleSelection({ id = 'roles' }: { id?: string }) {
         viewport={{ once: true, amount: 0.15 }}
         className="mx-auto w-full max-w-6xl"
       >
-        <motion.p
-          variants={staggerItem}
-          className="text-center text-[11px] font-semibold uppercase tracking-widest text-amber"
-        >
-          Step 01 — Choose your lane
-        </motion.p>
         <motion.h2
           variants={staggerItem}
-          className="mt-4 text-center font-display text-3xl font-bold text-bone sm:text-4xl"
+          className="text-center font-display text-3xl font-bold text-bone sm:text-4xl"
         >
           How will you be using <span className="text-brand-gradient">AutoMate</span>?
         </motion.h2>
-        <motion.p
-          variants={staggerItem}
-          className="mx-auto mt-3 max-w-xl text-center text-sm text-white/55 sm:text-base"
-        >
-          Pick a role to continue. We&apos;ll remember it and take you straight to the right sign-in
-          next time.
-        </motion.p>
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {ROLES.map((role) => (
