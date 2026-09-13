@@ -896,19 +896,26 @@ export function MotionWrapper({ children, className }: { children: React.ReactNo
 /** Wrap a Shell's <main> content to fade+slide between routes. */
 export function PageTransition({ children, className }: { children: React.ReactNode; className?: string }) {
   const pathname = usePathname();
+  // Keyed remount rather than AnimatePresence mode="wait".
+  //
+  // mode="wait" holds the incoming page until the outgoing one finishes its
+  // exit. When the outgoing page still had child animations in flight (the
+  // staggered FadeIn rows on Bookings & Jobs, for instance) that handoff could
+  // be missed, leaving the new page mounted but stranded at its initial
+  // variant - opacity 0 - so the content area read as blank until a reload.
+  //
+  // Changing the key remounts the wrapper, so the enter animation always runs
+  // from initial to enter on its own and never waits on anything.
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={pathname}
-        className={className}
-        variants={pageVariants}
-        initial="initial"
-        animate="enter"
-        exit="exit"
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      key={pathname}
+      className={className}
+      variants={pageVariants}
+      initial="initial"
+      animate="enter"
+    >
+      {children}
+    </motion.div>
   );
 }
 
