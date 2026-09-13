@@ -86,16 +86,22 @@ export function RoleCard({
         .join(' ')}
     >
       {/* ── Photograph ── */}
-      <div className="relative h-44 overflow-hidden sm:h-48">
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-[900ms] ease-out group-hover:scale-[1.08]"
-          style={{ backgroundImage: `url('${role.image}')` }}
-        />
-        <div className="scrim-card absolute inset-0" />
+      <div className="relative h-44 sm:h-48">
+        {/* The zoom on hover has to be clipped, but the clip lives on this
+            inner layer rather than the wrapper: the medallion below straddles
+            the seam on purpose, and an overflow-hidden wrapper cropped off its
+            bottom half. */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-[900ms] ease-out group-hover:scale-[1.08]"
+            style={{ backgroundImage: `url('${role.image}')` }}
+          />
+          <div className="scrim-card absolute inset-0" />
+        </div>
 
         {/* Icon medallion, straddling the photo/panel seam */}
         <span
-          className="absolute bottom-0 left-6 flex h-14 w-14 translate-y-1/2 items-center justify-center rounded-2xl border border-white/15 bg-graphite-raised transition-transform duration-300 group-hover:scale-105"
+          className="absolute bottom-0 left-6 z-10 flex h-14 w-14 translate-y-1/2 items-center justify-center rounded-2xl border border-white/15 bg-graphite-raised transition-transform duration-300 group-hover:scale-105"
           style={{ color: role.accent }}
         >
           <RoleIcon role={role.id} className="h-8 w-8" />
