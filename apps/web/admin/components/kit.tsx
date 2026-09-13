@@ -144,6 +144,24 @@ export const notify = {
     toast.promise(p, msgs),
 };
 
+/* Overlay portal */
+/**
+ * Renders a full-screen overlay into <body>.
+ *
+ * A position:fixed element is laid out against the nearest ancestor carrying a
+ * transform, filter or backdrop-filter - not the viewport. The app header uses
+ * backdrop-blur, so an overlay opened from the header (the notification bell)
+ * was sized to the header's ~76px instead of the full screen, and its rows
+ * rendered outside the visible panel. Portalling to <body> keeps these
+ * anchored to the viewport wherever they are triggered from.
+ */
+function OverlayPortal({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+  return createPortal(children, document.body);
+}
+
 /* ── Modal / Dialog ─────────────────────────── */
 export function Modal({
   open,
@@ -160,42 +178,44 @@ export function Modal({
 }) {
   const widths = { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl' };
   return (
-    <AnimatePresence>
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <motion.div
-            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            className={classNames('glass relative z-10 w-full rounded-2xl p-6', widths[size])}
-            initial={{ opacity: 0, scale: 0.95, y: 16 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 8 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {title && (
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="font-display text-lg font-bold text-slate-900">{title}</h3>
-                <button
-                  onClick={onClose}
-                  aria-label="Close"
-                  className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
-            {children}
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+    <OverlayPortal>
+      <AnimatePresence>
+        {open && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onClose}
+            />
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              className={classNames('glass relative z-10 w-full rounded-2xl p-6', widths[size])}
+              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97, y: 8 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {title && (
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="font-display text-lg font-bold text-slate-900">{title}</h3>
+                  <button
+                    onClick={onClose}
+                    aria-label="Close"
+                    className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+              {children}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </OverlayPortal>
   );
 }
 
@@ -1178,33 +1198,35 @@ export function Drawer({
   width?: number;
 }) {
   return (
-    <AnimatePresence>
-      {open && (
-        <div className="fixed inset-0 z-50">
-          <motion.div
-            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
-          <motion.aside
-            className="absolute right-0 top-0 flex h-full max-w-[90vw] flex-col bg-white/95 shadow-2xl backdrop-blur-xl"
-            style={{ width }}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={transition.soft}
-          >
-            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-              <h3 className="font-display text-lg font-bold text-slate-900">{title}</h3>
-              <button onClick={onClose} aria-label="Close" className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">✕</button>
-            </div>
-            <div className="flex-1 overflow-y-auto p-4">{children}</div>
-          </motion.aside>
-        </div>
-      )}
-    </AnimatePresence>
+    <OverlayPortal>
+      <AnimatePresence>
+        {open && (
+          <div className="fixed inset-0 z-50">
+            <motion.div
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onClose}
+            />
+            <motion.aside
+              className="absolute right-0 top-0 flex h-full max-w-[90vw] flex-col bg-white/95 shadow-2xl backdrop-blur-xl"
+              style={{ width }}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={transition.soft}
+            >
+              <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+                <h3 className="font-display text-lg font-bold text-slate-900">{title}</h3>
+                <button onClick={onClose} aria-label="Close" className="grid h-8 w-8 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">✕</button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4">{children}</div>
+            </motion.aside>
+          </div>
+        )}
+      </AnimatePresence>
+    </OverlayPortal>
   );
 }
 

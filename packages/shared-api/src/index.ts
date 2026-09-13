@@ -48,6 +48,37 @@ export interface ApiErrorContext {
  * Thrown for every failed request. `message` is always safe to show a user —
  * technical detail is deliberately not carried into it.
  */
+/**
+ * The notifications endpoints answer in the database's own shape - snake_case
+ * keys and read as 0/1 - while the Notification type callers are handed is
+ * camelCase with a boolean. Without this the timestamp read as undefined and
+ * every notification rendered a blank date.
+ */
+interface RawNotification {
+  id: number;
+  title: string;
+  body: string;
+  read: boolean | number;
+  recipientRole?: Role;
+  recipient_role?: Role;
+  recipientId?: number;
+  recipient_id?: number;
+  createdAt?: string;
+  created_at?: string;
+}
+
+function toNotification(r: RawNotification): Notification {
+  return {
+    id: r.id,
+    recipientRole: (r.recipientRole ?? r.recipient_role) as Role,
+    recipientId: (r.recipientId ?? r.recipient_id) as number,
+    title: r.title,
+    body: r.body,
+    read: Boolean(r.read),
+    createdAt: (r.createdAt ?? r.created_at) as string,
+  };
+}
+
 export class ApiError extends Error {
   readonly status: number;
   readonly path: string;
@@ -444,10 +475,14 @@ export class ApiClient {
 
   // ── Notifications (all roles) ──────────
   listNotifications() {
-    return this.request<Notification[]>('/notifications');
+    return this.request<RawNotification[]>('/notifications').then((rows) =>
+      rows.map(toNotification),
+    );
   }
   markNotificationRead(id: number) {
-    return this.request<Notification>(`/notifications/${id}/read`, { method: 'POST' });
+    return this.request<RawNotification>(`/notifications/${id}/read`, {
+      method: 'POST',
+    }).then(toNotification);
   }
 
   // ── Find Mechanics Nearby (roadside assistance) ──
