@@ -2,9 +2,11 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { formatDateTime, classNames } from '@automate/shared-utils';
-import type { Notification } from '@automate/shared-types';
-import { api } from '@/lib/api';
-import { normalizeNotification } from '@/lib/normalize';
+import {
+  loadNotifications,
+  markNotificationRead,
+  useNotifications,
+} from '@/lib/notificationsStore';
 import { Protected } from '@/components/Protected';
 import {
   Card,
@@ -15,7 +17,8 @@ import {
 } from '@/components/ui';
 
 function Notifications() {
-  const [items, setItems] = useState<Notification[]>([]);
+  // Shared with the header bell, so marking one read updates the badge too.
+  const { items, unread } = useNotifications();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [marking, setMarking] = useState<number | null>(null);
@@ -24,7 +27,7 @@ function Notifications() {
     setLoading(true);
     setError('');
     try {
-      setItems((await api.listNotifications()).map(normalizeNotification));
+      await loadNotifications();
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Failed to load notifications',
@@ -41,18 +44,13 @@ function Notifications() {
   async function markRead(id: number) {
     setMarking(id);
     try {
-      await api.markNotificationRead(id);
-      setItems((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
-      );
+      await markNotificationRead(id);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to mark read');
     } finally {
       setMarking(null);
     }
   }
-
-  const unread = items.filter((n) => !n.read).length;
 
   return (
     <>

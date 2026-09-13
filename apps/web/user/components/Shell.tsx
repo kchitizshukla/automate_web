@@ -5,9 +5,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Notification } from '@automate/shared-types';
+import {
+  loadNotifications,
+  markAllNotificationsRead,
+  useNotifications,
+} from '@/lib/notificationsStore';
 import { classNames, formatDateTime } from '@automate/shared-utils';
 import { useAuth } from '@/app/providers';
-import { api } from '@/lib/api';
 import { Avatar } from '@/components/ui';
 import { notify, PageTransition } from '@/components/kit';
 import { Assistant } from '@/components/Assistant';
@@ -82,35 +86,31 @@ function NavLinks({ collapsed, onNavigate, light }: { collapsed?: boolean; onNav
 
 /* ── Notification bell ──────────────────────── */
 function NotifBell() {
-  const [items, setItems] = useState<Notification[]>([]);
+  // The list lives in a store shared with the /notifications page, so marking
+  // one read there moves this badge too.
+  const { items, unread } = useNotifications();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  const load = useCallback(async () => {
-    try {
-      const n = await api.listNotifications();
-      setItems(n);
-    } catch {
+  useEffect(() => {
+    loadNotifications().catch(() => {
       /* silent */
-    }
+    });
   }, []);
 
-  useEffect(() => { load(); }, [load]);
   useEffect(() => {
     function h(e: MouseEvent) { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); }
     document.addEventListener('mousedown', h);
     return () => document.removeEventListener('mousedown', h);
   }, []);
 
-  const unread = items.filter((i) => !i.read).length;
-
   async function markAll() {
-    const ids = items.filter((i) => !i.read).map((i) => i.id);
-    setItems((prev) => prev.map((i) => ({ ...i, read: true })));
     try {
-      await Promise.all(ids.map((id) => api.markNotificationRead(id)));
-      if (ids.length) notify.success('All notifications marked read');
-    } catch { /* silent */ }
+      const n = await markAllNotificationsRead();
+      if (n) notify.success('All notifications marked read');
+    } catch {
+      notify.error('Could not mark notifications read');
+    }
   }
 
   return (
