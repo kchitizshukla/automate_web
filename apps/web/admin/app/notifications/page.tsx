@@ -1,11 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { formatDateTime, classNames } from '@automate/shared-utils';
 import type { Notification } from '@automate/shared-types';
-import { api } from '@/lib/api';
 import { createdOf } from '@/lib/rows';
-import { useApi } from '@/lib/useApi';
+import {
+  loadNotifications,
+  markNotificationRead,
+  useNotifications,
+} from '@/lib/notificationsStore';
 import {
   Loading,
   ErrorState,
@@ -15,17 +18,36 @@ import {
 } from '@/components/ui';
 
 export default function NotificationsPage() {
-  const { data, loading, error, reload } = useApi(
-    () => api.listNotifications(),
-    [],
-  );
+  // Shared with the header bell, so marking one read updates the badge too.
+  const { items, unread } = useNotifications();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [busy, setBusy] = useState<number | null>(null);
+
+  const reload = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await loadNotifications();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Failed to load notifications',
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    reload();
+  }, [reload]);
 
   async function markRead(id: number) {
     setBusy(id);
     try {
-      await api.markNotificationRead(id);
-      reload();
+      await markNotificationRead(id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to mark read');
     } finally {
       setBusy(null);
     }
@@ -34,8 +56,6 @@ export default function NotificationsPage() {
   if (loading) return <Loading label="Loading notifications…" />;
   if (error) return <ErrorState message={error} onRetry={reload} />;
 
-  const items = (data as Notification[]) ?? [];
-  const unread = items.filter((i) => !i.read).length;
 
   return (
     <div>

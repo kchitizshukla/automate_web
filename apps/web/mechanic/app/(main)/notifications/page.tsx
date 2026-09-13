@@ -3,20 +3,23 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Notification } from '@automate/shared-types';
 import { formatDateTime, classNames } from '@automate/shared-utils';
-import { api } from '@/lib/api';
-import { normalizeNotification } from '@/lib/normalize';
+import {
+  loadNotifications,
+  markNotificationRead,
+  useNotifications,
+} from '@/lib/notificationsStore';
 import { Loading, ErrorState, Empty } from '@/components/ui';
 
 export default function NotificationsPage() {
-  const [items, setItems] = useState<Notification[] | null>(null);
+  // Shared with the header bell, so marking one read updates the badge too.
+  const { items } = useNotifications();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     setError(null);
     try {
-      // Raw snake_case rows from the backend -> camelCase shared-types shape.
-      setItems((await api.listNotifications()).map((n) => normalizeNotification(n as any)));
+      await loadNotifications();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load notifications');
     } finally {
@@ -30,19 +33,16 @@ export default function NotificationsPage() {
 
   async function markRead(id: number) {
     try {
-      await api.markNotificationRead(id);
-      setItems((prev) =>
-        prev ? prev.map((n) => (n.id === id ? { ...n, read: true } : n)) : prev,
-      );
+      await markNotificationRead(id);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to mark as read');
     }
   }
 
   if (loading) return <Loading />;
-  if (error && !items) return <ErrorState message={error} onRetry={load} />;
+  if (error && !items.length) return <ErrorState message={error} onRetry={load} />;
 
-  const list = items ?? [];
+  const list = items;
 
   return (
     <div className="space-y-5">
