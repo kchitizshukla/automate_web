@@ -22,9 +22,11 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ROLES, type RoleDefinition, type RoleId } from '@automate/shared-brand';
 import { RoleCard } from './RoleCard';
+import { TrustStrip } from './TrustStrip';
 import { useRole } from '@/app/providers';
 import { useLoader } from './GlobalLoader';
 import { preconnect } from '@/lib/config';
+import { presentationFor } from '@/lib/roles';
 import { staggerContainer, staggerItem } from '@/lib/motion';
 
 export function RoleSelection({ id = 'roles' }: { id?: string }) {
@@ -39,11 +41,12 @@ export function RoleSelection({ id = 'roles' }: { id?: string }) {
       if (pending) return;
       setPending(role.id);
 
+      const look = presentationFor(role);
       selectRole(role.id);
       show({
-        message: `Continuing as ${role.label}`,
+        message: `Continuing as ${look.label}`,
         detail: 'Preparing your sign-in…',
-        accent: role.accent,
+        accent: look.accent,
       });
       // Start the handshake with the role app now; the handoff page redirects
       // there moments later.
@@ -54,28 +57,46 @@ export function RoleSelection({ id = 'roles' }: { id?: string }) {
   );
 
   /** Warm both hops for the card under the pointer. */
-  const warm = useCallback((role: RoleDefinition) => {
-    router.prefetch(role.route);
-    preconnect(role.id);
-  }, [router]);
+  const warm = useCallback(
+    (role: RoleDefinition) => {
+      router.prefetch(role.route);
+      preconnect(role.id);
+    },
+    [router],
+  );
 
   return (
-    <section id={id} className="scroll-mt-20 px-5 py-16 sm:px-8 sm:py-24">
+    <section
+      id={id}
+      className="relative scroll-mt-20 bg-navy-ink/60 px-5 py-16 sm:px-8 sm:py-20"
+    >
       <motion.div
         variants={staggerContainer(0.1)}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.15 }}
-        className="mx-auto w-full max-w-6xl"
+        className="mx-auto w-full max-w-7xl"
       >
+        <motion.p
+          variants={staggerItem}
+          className="text-center text-[11px] font-bold uppercase tracking-widest text-azure"
+        >
+          Get started
+        </motion.p>
         <motion.h2
           variants={staggerItem}
-          className="text-center font-display text-3xl font-bold text-bone sm:text-4xl"
+          className="mt-3.5 text-center font-display text-3xl font-bold text-bone sm:text-[2.35rem]"
         >
-          How will you be using <span className="text-brand-gradient">AutoMate</span>?
+          Choose Your Role
         </motion.h2>
+        <motion.p
+          variants={staggerItem}
+          className="mx-auto mt-3 max-w-xl text-center text-sm text-mist sm:text-[15px]"
+        >
+          Select how you want to use AutoMate and get started in just a few clicks.
+        </motion.p>
 
-        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-11 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {ROLES.map((role) => (
             <RoleCard
               key={role.id}
@@ -89,6 +110,8 @@ export function RoleSelection({ id = 'roles' }: { id?: string }) {
             />
           ))}
         </div>
+
+        <TrustStrip />
       </motion.div>
     </section>
   );

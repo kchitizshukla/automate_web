@@ -5,11 +5,14 @@
 
    Reveals on scroll (`whileInView`, once) so nothing
    animates until it is actually on screen.
+
+   Carries three of the nav's four anchors: the section itself is
+   "How it works", the feature grid is "Services", and the mechanic
+   showcase is "For mechanics".
    ────────────────────────────────────────────── */
 
 import { motion } from 'framer-motion';
 import { FEATURES, IMAGES } from '@automate/shared-brand';
-import { Backdrop } from './Backdrop';
 import { staggerContainer, staggerItem } from '@/lib/motion';
 
 /* Ionicons names in the shared package map to these inline paths on web,
@@ -23,7 +26,7 @@ const GLYPHS: Record<string, string> = {
 
 export function FeatureHighlights() {
   return (
-    <section id="features" className="scroll-mt-20 px-5 py-20 sm:px-8 sm:py-28">
+    <section id="features" className="scroll-mt-20 px-5 py-20 sm:px-8 sm:py-24">
       <motion.div
         variants={staggerContainer(0.08)}
         initial="hidden"
@@ -33,32 +36,35 @@ export function FeatureHighlights() {
       >
         <motion.p
           variants={staggerItem}
-          className="text-center text-[11px] font-semibold uppercase tracking-widest text-amber"
+          className="text-center text-[11px] font-bold uppercase tracking-widest text-azure"
         >
-          What you get
+          How it works
         </motion.p>
         <motion.h2
           variants={staggerItem}
-          className="mt-4 text-center font-display text-3xl font-bold text-bone sm:text-4xl"
+          className="mt-3.5 text-center font-display text-3xl font-bold text-bone sm:text-[2.35rem]"
         >
           Built for the whole <span className="text-brand-gradient">service journey</span>
         </motion.h2>
         <motion.p
           variants={staggerItem}
-          className="mx-auto mt-3 max-w-2xl text-center text-sm text-white/55 sm:text-base"
+          className="mx-auto mt-3 max-w-2xl text-center text-sm text-mist sm:text-[15px]"
         >
           From the moment a warning light comes on to the payout hitting a mechanic&apos;s account —
           one platform, three connected experiences.
         </motion.p>
 
-        <div className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          id="services"
+          className="mt-12 grid scroll-mt-24 gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4"
+        >
           {FEATURES.map((f) => (
             <motion.article
               key={f.title}
               variants={staggerItem}
-              className="group bg-graphite-ink p-6 transition-colors duration-300 hover:bg-graphite-surface"
+              className="group bg-navy-surface p-6 transition-colors duration-300 hover:bg-navy-raised"
             >
-              <span className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-amber/30 bg-amber/10 text-amber transition-colors duration-300 group-hover:bg-amber/20">
+              <span className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-azure/35 bg-azure/10 text-azure transition-colors duration-300 group-hover:bg-azure/20">
                 <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
                   <path
                     d={GLYPHS[f.icon]}
@@ -70,7 +76,7 @@ export function FeatureHighlights() {
                 </svg>
               </span>
               <h3 className="font-display text-base font-semibold text-bone">{f.title}</h3>
-              <p className="mt-2 text-[13px] leading-relaxed text-white/55">{f.body}</p>
+              <p className="mt-2 text-[13px] leading-relaxed text-mist">{f.body}</p>
             </motion.article>
           ))}
         </div>
@@ -78,6 +84,7 @@ export function FeatureHighlights() {
         {/* Two photographic showcase panels */}
         <div className="mt-5 grid gap-5 lg:grid-cols-2">
           <ShowcasePanel
+            id="for-mechanics"
             image={IMAGES.engine}
             eyebrow="For mechanics"
             title="Jobs that come to you"
@@ -96,11 +103,13 @@ export function FeatureHighlights() {
 }
 
 function ShowcasePanel({
+  id,
   image,
   eyebrow,
   title,
   body,
 }: {
+  id?: string;
   image: string;
   eyebrow: string;
   title: string;
@@ -108,9 +117,10 @@ function ShowcasePanel({
 }) {
   return (
     <motion.div
+      id={id}
       variants={staggerItem}
       whileHover={{ y: -5 }}
-      className="group relative isolate min-h-[19rem] overflow-hidden rounded-3xl border border-white/10 shadow-plate"
+      className="group relative isolate min-h-[19rem] scroll-mt-24 overflow-hidden rounded-3xl border border-white/10 shadow-plate"
     >
       <div
         className="absolute inset-0 -z-10 bg-cover bg-center transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
@@ -119,9 +129,9 @@ function ShowcasePanel({
       <div className="scrim-card absolute inset-0 -z-10" />
 
       <div className="flex h-full flex-col justify-end p-7 sm:p-8">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-amber">{eyebrow}</p>
+        <p className="text-[11px] font-bold uppercase tracking-widest text-azure">{eyebrow}</p>
         <h3 className="mt-2 font-display text-xl font-bold text-bone sm:text-2xl">{title}</h3>
-        <p className="mt-2 max-w-md text-sm leading-relaxed text-white/60">{body}</p>
+        <p className="mt-2 max-w-md text-sm leading-relaxed text-mist">{body}</p>
       </div>
     </motion.div>
   );

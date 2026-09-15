@@ -37,6 +37,7 @@ import { BrandLoader } from './BrandLoader';
 import { useRole } from '@/app/providers';
 import { useLoader } from './GlobalLoader';
 import { authUrlFor, preconnect } from '@/lib/config';
+import { presentationFor } from '@/lib/roles';
 import { staggerContainer, staggerItem, transition, usePrefersReducedMotion } from '@/lib/motion';
 
 /* Long enough to read "Continuing as …", short enough not to feel like a
@@ -46,6 +47,9 @@ const REDIRECT_MS = 900;
 
 export function AuthHandoff({ roleId }: { roleId: RoleId }) {
   const role = getRole(roleId)!;
+  // Same copy and accent the card on the landing page wore, so the hand-off
+  // reads as a continuation of the thing that was clicked.
+  const look = presentationFor(roleId);
   const { selectRole } = useRole();
   const { show, hide } = useLoader();
   const reduced = usePrefersReducedMotion();
@@ -80,8 +84,8 @@ export function AuthHandoff({ roleId }: { roleId: RoleId }) {
       // on whenever the other origin gets around to responding.
       show({
         message: mode === 'signup' ? 'Opening sign-up' : 'Signing you in',
-        detail: `Taking you to the ${role.label} app…`,
-        accent: role.accent,
+        detail: `Taking you to the ${look.label} app…`,
+        accent: look.accent,
       });
 
       /* Assigning `location.href` in this tick would race React's commit: the
@@ -104,7 +108,7 @@ export function AuthHandoff({ roleId }: { roleId: RoleId }) {
       requestAnimationFrame(() => requestAnimationFrame(go));
       window.setTimeout(go, 120);
     },
-    [roleId, role.label, role.accent, show],
+    [roleId, look.label, look.accent, show],
   );
 
   useEffect(() => {
@@ -131,19 +135,19 @@ export function AuthHandoff({ roleId }: { roleId: RoleId }) {
           variants={staggerItem}
           className="mx-auto mt-8 flex h-20 w-20 items-center justify-center rounded-2xl border"
           style={{
-            background: `${role.accent}1f`,
-            borderColor: `${role.accent}55`,
-            color: role.accent,
+            background: `${look.accent}1f`,
+            borderColor: `${look.accent}55`,
+            color: look.accent,
           }}
         >
           <RoleIcon role={role.id} className="h-11 w-11" />
         </motion.span>
 
         <motion.h1 variants={staggerItem} className="mt-6 font-display text-2xl font-bold text-bone">
-          Continuing as {role.label}
+          Continuing as {look.label}
         </motion.h1>
-        <motion.p variants={staggerItem} className="mt-2 text-sm leading-relaxed text-white/55">
-          {role.description}
+        <motion.p variants={staggerItem} className="mt-2 text-sm leading-relaxed text-mist">
+          {look.description}
         </motion.p>
 
         {/* Redirect progress */}
@@ -154,16 +158,16 @@ export function AuthHandoff({ roleId }: { roleId: RoleId }) {
           {!cancelled && !leaving && (
             <motion.div
               className="h-full rounded-full"
-              style={{ background: role.accent }}
+              style={{ background: look.accent }}
               initial={{ width: reduced ? '100%' : '0%' }}
               animate={{ width: '100%' }}
               transition={{ duration: REDIRECT_MS / 1000, ease: 'linear' }}
             />
           )}
         </motion.div>
-        <motion.p variants={staggerItem} className="mt-3 text-xs text-white/55" aria-live="polite">
+        <motion.p variants={staggerItem} className="mt-3 text-xs text-mist" aria-live="polite">
           {leaving
-            ? `Opening the ${role.label} app…`
+            ? `Opening the ${look.label} app…`
             : cancelled
               ? 'Redirect paused — pick an option below.'
               : 'Taking you to sign in…'}
@@ -180,8 +184,8 @@ export function AuthHandoff({ roleId }: { roleId: RoleId }) {
             whileHover={leaving ? undefined : { scale: 1.02 }}
             whileTap={leaving ? undefined : { scale: 0.98 }}
             transition={transition.snappy}
-            className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-graphite disabled:cursor-progress"
-            style={{ background: role.accent }}
+            className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold disabled:cursor-progress"
+            style={{ background: look.accent, color: look.onAccent }}
           >
             {leaving && <BrandLoader size={16} monochrome />}
             {leaving ? 'Signing in…' : 'Sign in'}
@@ -201,14 +205,14 @@ export function AuthHandoff({ roleId }: { roleId: RoleId }) {
             <button
               type="button"
               onClick={() => setCancelled(true)}
-              className="text-white/55 underline-offset-4 transition-colors hover:text-bone hover:underline"
+              className="text-mist underline-offset-4 transition-colors hover:text-bone hover:underline"
             >
               Stay here
             </button>
           )}
           <Link
             href="/"
-            className="text-white/55 underline-offset-4 transition-colors hover:text-bone hover:underline"
+            className="text-mist underline-offset-4 transition-colors hover:text-bone hover:underline"
             onClick={() => setCancelled(true)}
           >
             Choose a different role

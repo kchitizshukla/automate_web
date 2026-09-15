@@ -1,8 +1,11 @@
 import type { Config } from 'tailwindcss';
 import { palette } from '@automate/shared-brand';
 
-/* Tailwind reads its palette straight from @automate/shared-brand so the
-   landing page and the mobile LandingScreen can never drift apart. */
+/* Tailwind reads the shared palette from @automate/shared-brand so the tokens
+   the native apps rely on stay available here, and extends it with the
+   landing surface's own navy/azure scale. The landing page is the one screen
+   a visitor meets before picking a lane, so it wears the neutral product
+   colour rather than any single role's accent. */
 
 const config: Config = {
   content: [
@@ -16,6 +19,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        /* ── Landing surface ── */
+        navy: {
+          DEFAULT: '#0A1628', // page canvas
+          deep: '#050C18',    // hero floor
+          ink: '#0C1B2E',     // section canvas
+          surface: '#112438', // cards, tiles
+          raised: '#17304A',  // hover / medallions
+        },
+        azure: {
+          DEFAULT: '#2B8FFF',
+          soft: '#5EA9FF',
+          deep: '#1668D8',
+          glow: '#4DA3FF',
+        },
+        /* ── Shared tokens, kept so the hand-off screens keep compiling ── */
         graphite: {
           DEFAULT: palette.void,
           ink: palette.ink,
@@ -35,7 +53,8 @@ const config: Config = {
           DEFAULT: palette.steel,
           soft: palette.steelSoft,
         },
-        bone: palette.text,
+        bone: '#F3F7FC',
+        mist: '#94A8C0', // muted body copy on navy
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -43,10 +62,11 @@ const config: Config = {
       },
       borderRadius: { '2xl': '1rem', '3xl': '1.5rem', '4xl': '2rem' },
       boxShadow: {
-        // Deep, neutral shadows — photography supplies the drama, not glow.
-        plate: '0 18px 48px -20px rgba(0,0,0,0.85)',
-        lift: '0 30px 70px -28px rgba(0,0,0,0.95)',
+        plate: '0 18px 48px -20px rgba(2, 8, 20, 0.9)',
+        lift: '0 30px 70px -28px rgba(2, 8, 20, 0.95)',
         inset: 'inset 0 1px 0 rgba(255,255,255,0.06)',
+        // Soft azure bloom under the primary call to action.
+        azure: '0 14px 34px -12px rgba(43, 143, 255, 0.55)',
       },
       letterSpacing: { widest: '0.22em' },
       keyframes: {

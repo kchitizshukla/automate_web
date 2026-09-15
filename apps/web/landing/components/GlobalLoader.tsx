@@ -126,7 +126,7 @@ export function GlobalLoader() {
             key="overlay"
             /* Above the sticky nav (z-50) and anything else on the page, but
                below the top bar so the two never fight. */
-            className="fixed inset-0 z-[9998] grid place-items-center bg-graphite/80 px-5 backdrop-blur-md"
+            className="fixed inset-0 z-[9998] grid place-items-center bg-navy-deep/80 px-5 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -151,7 +151,7 @@ export function GlobalLoader() {
               <BrandLoader size={64} accent={accent} />
               <div>
                 <p className="font-display text-base font-bold text-bone">{message}</p>
-                {detail && <p className="mt-1.5 text-xs text-white/55">{detail}</p>}
+                {detail && <p className="mt-1.5 text-xs text-mist">{detail}</p>}
               </div>
             </motion.div>
           </motion.div>

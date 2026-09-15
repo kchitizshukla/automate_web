@@ -4,7 +4,7 @@
    A CSS background layer plus a gradient scrim, matching
    the pattern in apps/web/user/app/page.tsx. Using
    `background-image` rather than <img> means a failed
-   request leaves the graphite canvas showing instead of
+   request leaves the navy canvas showing instead of
    a broken-image placeholder.
    ────────────────────────────────────────────── */
 
@@ -14,6 +14,8 @@ export function Backdrop({
   variant = 'scrim',
   /** Opacity of the photograph itself, before the scrim. */
   opacity = 0.5,
+  /** Which part of the frame to hold onto as the viewport narrows. */
+  position = 'center',
   /** Slow Ken Burns pan — skip it for small or repeated surfaces. */
   animated = false,
   className = '',
@@ -21,13 +23,17 @@ export function Backdrop({
   src: string;
   variant?: 'scrim' | 'scrim-card';
   opacity?: number;
+  position?: 'center' | 'right' | 'left';
   animated?: boolean;
   className?: string;
 }) {
+  const anchor =
+    position === 'right' ? 'bg-right' : position === 'left' ? 'bg-left' : 'bg-center';
+
   return (
     <div aria-hidden className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}>
       <div
-        className={`absolute inset-0 bg-cover bg-center ${animated ? 'animate-pan' : ''}`}
+        className={`absolute inset-0 bg-cover ${anchor} ${animated ? 'animate-pan' : ''}`}
         style={{ backgroundImage: `url('${src}')`, opacity }}
       />
       <div className={`absolute inset-0 ${variant}`} />

@@ -10,75 +10,59 @@ import type { RoleId } from '@automate/shared-brand';
 
 type IconProps = { className?: string };
 
-/** Vehicle owner — a car in three-quarter silhouette. */
-function CarIcon({ className }: IconProps) {
+/** Vehicle owner — a person, since the card speaks to the driver not the car. */
+function PersonIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
+      <circle cx="24" cy="17" r="7.5" stroke="currentColor" strokeWidth="3" />
       <path
-        d="M8 30v6a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2h16v2a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-6"
+        d="M10.5 39.5a13.5 13.5 0 0 1 27 0"
         stroke="currentColor"
-        strokeWidth="2.2"
+        strokeWidth="3"
         strokeLinecap="round"
       />
-      <path
-        d="M6 30v-5.2a4 4 0 0 1 .9-2.5l5.4-6.7A5 5 0 0 1 16.2 13h15.6a5 5 0 0 1 3.9 1.9l5.4 6.7a4 4 0 0 1 .9 2.5V30a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2Z"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinejoin="round"
-      />
-      <path d="M9 23h30" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" opacity=".55" />
-      <circle cx="14" cy="27" r="2" fill="currentColor" />
-      <circle cx="34" cy="27" r="2" fill="currentColor" />
     </svg>
   );
 }
 
-/** Mechanic — crossed wrench and screwdriver. */
+/** Mechanic — a wrench held at the working angle. */
 function WrenchIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
       <path
-        d="M30.5 8.5a9 9 0 0 0-11.2 11.6L8.9 30.5a3.7 3.7 0 0 0 5.2 5.2l10.4-10.4A9 9 0 0 0 36.2 14l-5 5-4.2-4.2 5-5a9 9 0 0 0-1.5-1.3Z"
+        d="M31.6 7.4a10 10 0 0 0-12.4 12.9L8.4 31.1a4.1 4.1 0 0 0 5.8 5.8l10.8-10.8A10 10 0 0 0 38 13.7l-5.6 5.6-4.7-4.7 5.5-5.6a10 10 0 0 0-1.6-1.6Z"
         stroke="currentColor"
-        strokeWidth="2.2"
+        strokeWidth="3"
         strokeLinejoin="round"
       />
-      <path d="M12 32.5h.02" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" />
-      <path
-        d="M31 30l7.5 7.5a2.8 2.8 0 0 1-4 4L27 34"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity=".6"
-      />
+      <path d="M11.6 33.7h.02" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
     </svg>
   );
 }
 
-/** Admin — shield with a pulse line, echoing the analytics console. */
+/** Admin — shield with a cog, echoing the operations console. */
 function ShieldIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 48 48" fill="none" className={className} aria-hidden="true">
       <path
-        d="M24 6l14 5v11c0 9.1-5.9 16.6-14 20-8.1-3.4-14-10.9-14-20V11l14-5Z"
+        d="M24 5.5 38 11v10.5c0 9-5.8 16.4-14 19.8-8.2-3.4-14-10.8-14-19.8V11l14-5.5Z"
         stroke="currentColor"
-        strokeWidth="2.2"
+        strokeWidth="3"
         strokeLinejoin="round"
       />
+      <circle cx="24" cy="21" r="3.6" stroke="currentColor" strokeWidth="2.6" />
       <path
-        d="M16 25h4l2.5-5.5L27 30l2.2-5H33"
+        d="M24 13.6v2.2M24 26.2v2.2M30.4 17.3l-1.9 1.1M19.5 23.6l-1.9 1.1M30.4 24.7l-1.9-1.1M19.5 18.4l-1.9-1.1"
         stroke="currentColor"
-        strokeWidth="2.2"
+        strokeWidth="2.4"
         strokeLinecap="round"
-        strokeLinejoin="round"
       />
     </svg>
   );
 }
 
 const ICONS: Record<RoleId, (p: IconProps) => JSX.Element> = {
-  user: CarIcon,
+  user: PersonIcon,
   mechanic: WrenchIcon,
   admin: ShieldIcon,
 };

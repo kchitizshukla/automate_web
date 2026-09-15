@@ -8,15 +8,17 @@
 // counter-rotating inner arc), so a visitor crossing from the landing page
 // into user/mechanic/admin sees one continuous product.
 //
-// What differs here is only the palette: the landing surface is the graphite
-// canvas with a warm amber accent, and each role can tint the mark with its
+// What differs here is only the palette: the landing surface is the navy
+// canvas with an azure accent, and each role can tint the mark with its
 // own accent while it is being selected.
 //
 // Motion lives in globals.css (`.brand-loader*`), which also handles
 // prefers-reduced-motion.
 // ──────────────────────────────────────────────
 import React from 'react';
-import { palette } from '@automate/shared-brand';
+/* The landing surface has its own accent, so the default tint comes from
+   here rather than from the shared palette; `accent` still overrides it. */
+const AZURE = { soft: '#5EA9FF', base: '#2B8FFF', deep: '#1668D8' } as const;
 
 export interface BrandLoaderProps {
   /** Pixel size of the mark. Detail is dropped below 28px to stay legible. */
@@ -33,9 +35,9 @@ export function BrandLoader({ size = 40, accent, monochrome = false, className }
   const gid = React.useId().replace(/:/g, '');
   const detailed = size >= 28;
 
-  const c1 = accent ?? palette.amberSoft;
-  const c2 = accent ?? palette.amber;
-  const c3 = accent ?? palette.copper;
+  const c1 = accent ?? AZURE.soft;
+  const c2 = accent ?? AZURE.base;
+  const c3 = accent ?? AZURE.deep;
 
   const stroke = monochrome ? 'currentColor' : `url(#${gid})`;
   const track = monochrome ? 'currentColor' : c1;
@@ -142,7 +144,7 @@ export function InlineLoader({
       aria-live="polite"
     >
       <BrandLoader size={size} accent={accent} />
-      <span className="text-sm font-medium text-white/60">{label}</span>
+      <span className="text-sm font-medium text-mist">{label}</span>
     </div>
   );
 }

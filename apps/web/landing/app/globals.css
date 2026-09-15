@@ -5,15 +5,13 @@
 
 /* ──────────────────────────────────────────────
    AutoMate — landing surface
-   Professional automotive · graphite canvas ·
-   warm amber accent · photography-led
+   Deep navy canvas · azure accent · photography-led
    ────────────────────────────────────────────── */
 :root {
   color-scheme: dark;
-  --amber: 224 163 62;  /* workshop-light amber */
-  --copper: 194 112 63; /* burnt copper        */
-  --steel: 125 139 153; /* brushed steel       */
-  --graphite: 14 17 19; /* canvas              */
+  --azure: 43 143 255; /* primary accent */
+  --azure-glow: 77 163 255;
+  --navy: 10 22 40; /* canvas */
 }
 
 html,
@@ -27,12 +25,12 @@ body {
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  color: #f4f1ec;
-  background: #0e1113;
-  /* Warm, restrained washes — a lit showroom rather than a neon skyline. */
+  color: #f3f7fc;
+  background: #0a1628;
+  /* Cool washes rising from the corners — a lit service bay at night. */
   background-image:
-    radial-gradient(50rem 50rem at 12% -8%, rgba(var(--amber), 0.10), transparent 60%),
-    radial-gradient(42rem 42rem at 100% 8%, rgba(var(--copper), 0.07), transparent 55%);
+    radial-gradient(52rem 52rem at 8% -10%, rgba(var(--azure), 0.13), transparent 62%),
+    radial-gradient(44rem 44rem at 104% 6%, rgba(var(--azure-glow), 0.09), transparent 58%);
   background-attachment: fixed;
   overflow-x: hidden;
 }
@@ -45,9 +43,9 @@ h3,
   letter-spacing: -0.025em;
 }
 
-/* Amber-to-copper gradient text for the hero's emphasis word. */
+/* Azure gradient text for the headline's emphasis line. */
 .text-brand-gradient {
-  background: linear-gradient(100deg, #f0bd6b, #e0a33e 45%, #c2703f);
+  background: linear-gradient(100deg, #5ea9ff, #2b8fff 55%, #1668d8);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -56,31 +54,51 @@ h3,
 /* Frosted panel over photography. Blur is capped at 16px — heavier costs
    real frames once several panels are composited over a moving image. */
 .panel {
-  background: rgba(20, 24, 27, 0.72);
+  background: rgba(12, 27, 46, 0.74);
   backdrop-filter: blur(16px) saturate(115%);
   -webkit-backdrop-filter: blur(16px) saturate(115%);
   border: 1px solid rgba(255, 255, 255, 0.11);
   box-shadow:
-    0 18px 48px -20px rgba(0, 0, 0, 0.85),
+    0 18px 48px -20px rgba(2, 8, 20, 0.9),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-/* Scrim laid over every background photograph so text stays legible
-   regardless of what the image is doing underneath. */
+/* Scrim laid over the hero photograph so the copy column stays legible
+   however the image behaves underneath. The horizontal pass keeps the
+   left half near-solid and lets the mechanic read through on the right. */
 .scrim {
   background:
-    linear-gradient(180deg, rgba(14, 17, 19, 0.55) 0%, rgba(14, 17, 19, 0.82) 55%, #0e1113 100%),
-    linear-gradient(90deg, rgba(14, 17, 19, 0.9) 0%, rgba(14, 17, 19, 0.35) 60%, transparent 100%);
+    linear-gradient(180deg, rgba(5, 12, 24, 0.45) 0%, rgba(5, 12, 24, 0.62) 62%, #0a1628 100%),
+    linear-gradient(
+      90deg,
+      #071122 0%,
+      rgba(7, 17, 34, 0.9) 40%,
+      rgba(7, 17, 34, 0.32) 76%,
+      rgba(7, 17, 34, 0.1) 100%
+    );
 }
 
 /* Lighter scrim for the smaller card photographs. */
 .scrim-card {
-  background: linear-gradient(180deg, rgba(14, 17, 19, 0.25) 0%, rgba(20, 24, 27, 0.92) 62%, #14181b 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(5, 12, 24, 0.25) 0%,
+    rgba(12, 27, 46, 0.92) 62%,
+    #0c1b2e 100%
+  );
 }
 
 /* Thin machined rule used under section eyebrows. */
-.rule-amber {
-  background: linear-gradient(90deg, #e0a33e, rgba(224, 163, 62, 0));
+.rule-azure {
+  background: linear-gradient(90deg, #2b8fff, rgba(43, 143, 255, 0));
+}
+
+/* Hairline rules flanking the hero's closing caption. */
+.rule-hairline {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+}
+.rule-hairline-r {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), transparent);
 }
 
 /* ──────────────────────────────────────────────
@@ -92,15 +110,15 @@ h3,
    `opacity` animate, so the whole thing stays on the compositor.
 
    Colours come from --loader-1/2/3, which the component sets per instance
-   (amber by default, or the role's accent while that role is loading).
+   (azure by default, or the role's accent while that role is loading).
    ────────────────────────────────────────────── */
 .brand-loader {
   position: relative;
   display: inline-grid;
   place-items: center;
-  --loader-1: #f0bd6b;
-  --loader-2: #e0a33e;
-  --loader-3: #c2703f;
+  --loader-1: #5ea9ff;
+  --loader-2: #2b8fff;
+  --loader-3: #1668d8;
 }
 
 /* Soft halo — the thing that makes it read as "alive" rather than "a circle". */
@@ -108,12 +126,12 @@ h3,
   position: absolute;
   inset: -14%;
   border-radius: 50%;
-  /* Fallback for engines without color-mix(); the amber default is the
+  /* Fallback for engines without color-mix(); the azure default is the
      overwhelmingly common case anyway. */
   background: radial-gradient(
     circle,
-    rgba(224, 163, 62, 0.28) 0%,
-    rgba(240, 189, 107, 0.12) 45%,
+    rgba(43, 143, 255, 0.28) 0%,
+    rgba(94, 169, 255, 0.12) 45%,
     transparent 70%
   );
   background: radial-gradient(
@@ -126,7 +144,10 @@ h3,
   animation: loader-halo 1.9s ease-in-out infinite;
 }
 
-.brand-loader__svg { position: relative; overflow: visible; }
+.brand-loader__svg {
+  position: relative;
+  overflow: visible;
+}
 
 /* Both arcs spin about the mark's centre. */
 .brand-loader__arc-outer,
@@ -134,12 +155,18 @@ h3,
   transform-origin: 50% 50%;
   transform-box: fill-box;
 }
-.brand-loader__arc-outer { animation: loader-orbit 1.15s cubic-bezier(0.62, 0.1, 0.36, 0.94) infinite; }
-.brand-loader__arc-inner { animation: loader-orbit-rev 1.7s linear infinite; }
+.brand-loader__arc-outer {
+  animation: loader-orbit 1.15s cubic-bezier(0.62, 0.1, 0.36, 0.94) infinite;
+}
+.brand-loader__arc-inner {
+  animation: loader-orbit-rev 1.7s linear infinite;
+}
 
 /* The comet: its length breathes as it travels, so the sweep never looks
    mechanical the way a fixed-length arc does. */
-.brand-loader__comet { animation: loader-dash 1.15s ease-in-out infinite; }
+.brand-loader__comet {
+  animation: loader-dash 1.15s ease-in-out infinite;
+}
 
 /* Rounded-square core — carries over the Brandmark's medallion language. */
 .brand-loader__core {
@@ -148,28 +175,59 @@ h3,
   animation: loader-core 1.15s ease-in-out infinite;
 }
 
-@keyframes loader-orbit     { to { transform: rotate(360deg); } }
-@keyframes loader-orbit-rev { to { transform: rotate(-360deg); } }
+@keyframes loader-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader-orbit-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
 @keyframes loader-dash {
-  0%   { stroke-dasharray: 16 300; stroke-dashoffset: 0; }
-  50%  { stroke-dasharray: 92 300; stroke-dashoffset: -24; }
-  100% { stroke-dasharray: 16 300; stroke-dashoffset: -122; }
+  0% {
+    stroke-dasharray: 16 300;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 92 300;
+    stroke-dashoffset: -24;
+  }
+  100% {
+    stroke-dasharray: 16 300;
+    stroke-dashoffset: -122;
+  }
 }
 @keyframes loader-core {
-  0%, 100% { transform: scale(1) rotate(0deg);      border-radius: 32%; }
-  50%      { transform: scale(0.72) rotate(45deg);  border-radius: 48%; }
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    border-radius: 32%;
+  }
+  50% {
+    transform: scale(0.72) rotate(45deg);
+    border-radius: 48%;
+  }
 }
 @keyframes loader-halo {
-  0%, 100% { opacity: 0.4; transform: scale(0.9); }
-  50%      { opacity: 0.85; transform: scale(1.08); }
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
 }
 
 /* Indeterminate top bar — pairs with the overlay on the cross-origin hand-off,
    where the browser's own progress bar doesn't start until we navigate. */
 .brand-loader-bar {
-  --loader-1: #f0bd6b;
-  --loader-2: #e0a33e;
-  --loader-3: #c2703f;
+  --loader-1: #5ea9ff;
+  --loader-2: #2b8fff;
+  --loader-3: #1668d8;
   background: linear-gradient(
     90deg,
     transparent,
@@ -181,9 +239,15 @@ h3,
   animation: loader-bar 1.15s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 @keyframes loader-bar {
-  0%   { transform: translateX(-100%) scaleX(0.6); }
-  55%  { transform: translateX(60%) scaleX(1); }
-  100% { transform: translateX(220%) scaleX(0.7); }
+  0% {
+    transform: translateX(-100%) scaleX(0.6);
+  }
+  55% {
+    transform: translateX(60%) scaleX(1);
+  }
+  100% {
+    transform: translateX(220%) scaleX(0.7);
+  }
 }
 
 /* Reduced motion: the global rule below kills animation outright, which would
@@ -192,7 +256,9 @@ h3,
 @media (prefers-reduced-motion: reduce) {
   .brand-loader__halo,
   .brand-loader__core,
-  .brand-loader__comet { animation: none !important; }
+  .brand-loader__comet {
+    animation: none !important;
+  }
   .brand-loader__arc-outer,
   .brand-loader__arc-inner,
   .brand-loader-bar {
@@ -202,25 +268,33 @@ h3,
     transform: none !important;
   }
 }
-@keyframes loader-rm-pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@keyframes loader-rm-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
 
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0e1113;
+  background: #0a1628;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(var(--amber), 0.32);
+  background: rgba(var(--azure), 0.34);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--amber), 0.5);
+  background: rgba(var(--azure), 0.55);
 }
 
 :focus-visible {
-  outline: 2px solid rgb(var(--amber));
+  outline: 2px solid rgb(var(--azure));
   outline-offset: 3px;
   border-radius: 12px;
 }
